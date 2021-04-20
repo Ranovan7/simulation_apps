@@ -28,16 +28,16 @@ impl FromWorld for ButtonMaterials {
     }
 }
 
-struct PlayButton;
+struct BoidsButton;
 
 fn setup_menu(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     button_materials: Res<ButtonMaterials>,
 ) {
+    println!("Setting Up Menu...");
     commands.spawn_bundle(UiCameraBundle::default());
-    commands
-        .spawn_bundle(ButtonBundle {
+    commands.spawn_bundle(ButtonBundle {
             style: Style {
                 size: Size::new(Val::Px(120.0), Val::Px(50.0)),
                 margin: Rect::all(Val::Auto),
@@ -48,12 +48,12 @@ fn setup_menu(
             material: button_materials.normal.clone(),
             ..Default::default()
         })
-        .insert(PlayButton)
+        .insert(BoidsButton)
         .with_children(|parent| {
             parent.spawn_bundle(TextBundle {
                 text: Text {
                     sections: vec![TextSection {
-                        value: "Play".to_string(),
+                        value: "Boids".to_string(),
                         style: TextStyle {
                             font: asset_server.get_handle("fonts/FiraSans-Bold.ttf"),
                             font_size: 40.0,
@@ -87,7 +87,7 @@ fn click_play_button(
             Interaction::Clicked => {
                 commands.entity(button).despawn();
                 commands.entity(text).despawn();
-                state.set(GameState::Playing).unwrap();
+                state.set(GameState::BoidsSimulation).unwrap();
             }
             Interaction::Hovered => {
                 *material = button_materials.hovered.clone();

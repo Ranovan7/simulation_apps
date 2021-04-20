@@ -6,7 +6,7 @@ use bevy_webgl2;
 
 use bevy::prelude::{App, ClearColor, Color, WindowDescriptor};
 use bevy::DefaultPlugins;
-use game_plugin::GamePlugin;
+use simulation::SimulationPlugin;
 
 fn main() {
     let mut app = App::build();
@@ -16,11 +16,11 @@ fn main() {
         .insert_resource(WindowDescriptor {
             width: 800.,
             height: 600.,
-            title: "Bevy game".to_string(), // ToDo
+            title: "Simulation Apps".to_string(), // ToDo
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
-        .add_plugin(GamePlugin);
+        .add_plugin(SimulationPlugin);
 
     #[cfg(target_arch = "wasm32")]
     app.add_plugin(bevy_webgl2::WebGL2Plugin);
