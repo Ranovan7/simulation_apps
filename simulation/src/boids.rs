@@ -36,7 +36,6 @@ impl Plugin for BoidsPlugin {
                     .with_run_criteria(FixedTimestep::step(TIME_STEP as f64))
                     // .with_system(border_wrap_system.system())
                     .with_system(emergence_system.system())
-                    .with_system(border_avoidance_system.system())
                     .with_system(bird_movement_system.system()),
             )
             .add_system_set(
@@ -276,12 +275,38 @@ fn bird_movement_system(
             b_vel.radians = new_rad;
         }
 
+        // border avoidance
+        b_vel.velocity = border_evasion(b_vel.velocity, *transform);
+
         // update position and rotation
         transform.translation += b_vel.velocity * TIME_STEP;
         transform.rotation = Quat::from_rotation_z(b_vel.radians);
 
         b_acc.acceleration = Vec3::new(0.0, 0.0, 0.0);
     }
+}
+
+fn border_evasion(
+    velocity: Vec3,
+    transform: Transform,
+) -> Vec3 {
+    let mut result = velocity.clone();
+    let half_w = WIDTH / 2.0;
+    let half_h = HEIGHT / 2.0;
+
+    if transform.translation.x < -half_w {
+        result.x = result.x.abs();
+    } else if transform.translation.x > half_w {
+        result.x = -(result.x.abs());
+    }
+
+    if transform.translation.y < -half_h {
+        result.y = result.y.abs();
+    } else if transform.translation.y > half_h {
+        result.y = -(result.y.abs());
+    }
+
+    result
 }
 
 fn emergence_system(
@@ -355,34 +380,12 @@ fn emergence_system(
     }
 }
 
-fn border_avoidance_system(
-    mut bird_query: Query<(&BirdVel, &Transform, &mut BirdAcc)>,
-    config: Res<BirdConfig>,
-) {
-    for (b_vel, b_trans, mut b_acc) in bird_query.iter_mut() {
-        let half_w = WIDTH / 2.0;
-        let half_h = HEIGHT / 2.0;
-
-        if b_trans.translation.x < -half_w {
-            b_acc.acceleration.x = b_acc.acceleration.x.abs();
-        } else if b_trans.translation.x > half_w {
-            b_acc.acceleration.x = -(b_acc.acceleration.x.abs());
-        }
-
-        if b_trans.translation.y < -half_h {
-            b_acc.acceleration.y = b_acc.acceleration.y.abs();
-        } else if b_trans.translation.y > half_h {
-            b_acc.acceleration.y = -(b_acc.acceleration.y.abs());
-        }
-    }
-}
-
 fn border_wrap_system(
     mut bird_query: Query<(&BirdVel, &mut Transform)>
 ) {
     for (b_vel, mut b_trans) in bird_query.iter_mut() {
-        let half_w = WIDTH / 2.0;
-        let half_h = HEIGHT / 2.0;
+        let half_w = (WIDTH / 2.0) + 300.0;
+        let half_h = (HEIGHT / 2.0) + 300.0;
         if b_trans.translation.x < -half_w {
             b_trans.translation.x = half_w;
         } else if b_trans.translation.x > half_w {
