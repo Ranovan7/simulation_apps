@@ -272,7 +272,7 @@ fn bird_movement_system(
         b_vel.velocity = vec_clip(b_vel.velocity, -MAX_SPEED, MAX_SPEED);
 
         let new_rad = b_vel.velocity.y.atan2(b_vel.velocity.x);
-        if (new_rad - b_vel.radians).abs() >= 0.5 {
+        if (new_rad - b_vel.radians).abs() >= 0.52 {
             b_vel.radians = new_rad;
         }
 
