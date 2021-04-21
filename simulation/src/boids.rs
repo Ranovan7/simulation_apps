@@ -180,7 +180,8 @@ fn boids_setup(
     // Add birds
     let n_birds = 200;
     let bird_size = Vec2::new(15.0, 15.0);
-    let bird_material = materials.add(Color::rgb(0.2, 0.4, 1.0).into());
+    // let bird_material = materials.add(Color::rgb(0.2, 0.4, 1.0).into());
+    let bird_material = materials.add(asset_server.load("textures/boids.png").into());
     for bird in 0..n_birds {
         let bird_position = Vec3::new(
             rng.gen_range(0..WIDTH as i32) as f32 - WIDTH/2.0,
