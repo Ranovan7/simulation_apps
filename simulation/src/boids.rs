@@ -109,7 +109,7 @@ fn boids_setup(
                     style: TextStyle {
                         font: asset_server.load("fonts/FiraMono-Medium.ttf"),
                         font_size: 20.0,
-                        color: Color::rgb(0.2, 0.2, 0.2),
+                        color: Color::rgb(0.9, 0.9, 0.9),
                     },
                 },
                 TextSection {
@@ -117,7 +117,7 @@ fn boids_setup(
                     style: TextStyle {
                         font: asset_server.load("fonts/FiraMono-Medium.ttf"),
                         font_size: 20.0,
-                        color: Color::rgb(0.2, 0.2, 0.2),
+                        color: Color::rgb(0.9, 0.9, 0.9),
                     },
                 },
                 TextSection {
@@ -125,7 +125,7 @@ fn boids_setup(
                     style: TextStyle {
                         font: asset_server.load("fonts/FiraMono-Medium.ttf"),
                         font_size: 20.0,
-                        color: Color::rgb(0.2, 0.2, 0.2),
+                        color: Color::rgb(0.9, 0.9, 0.9),
                     },
                 },
             ],
