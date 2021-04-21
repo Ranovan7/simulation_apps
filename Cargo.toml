@@ -13,7 +13,7 @@ default = [
     "bevy/bevy_winit",
     "bevy/render",
     "bevy/png",
-    "game_plugin/default"
+    "simulation/default"
 ]
 
 native = [
