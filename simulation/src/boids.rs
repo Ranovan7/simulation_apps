@@ -24,7 +24,7 @@ impl Plugin for BoidsPlugin {
                 COHESION_RAD: 100.0,
                 SEPARATION_RAD: 100.0,
             })
-            .insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9)))
+            .insert_resource(ClearColor(Color::rgb(0.2, 0.2, 0.2)))
             .add_system_set(
                 SystemSet::on_enter(GameState::BoidsSimulation)
                     .with_system(boids_setup.system()),
@@ -55,6 +55,7 @@ struct BirdConfig {
 struct BirdVel {
     id: u32,
     velocity: Vec3,
+    radians: f32,
 }
 
 struct BirdAcc {
@@ -201,7 +202,8 @@ fn boids_setup(
                     rng.gen_range(0..MAX_SPEED as i32 * 2) as f32 - MAX_SPEED,
                     rng.gen_range(0..MAX_SPEED as i32 * 2) as f32 - MAX_SPEED,
                     0.0,
-                )
+                ),
+                radians: 0.0
             })
             .insert(BirdAcc {
                 acceleration: Vec3::new(0.0, 0.0, 0.0)
@@ -262,12 +264,21 @@ fn show_info_system(config: Res<BirdConfig>, mut query: Query<&mut Text>) {
     }
 }
 
-fn bird_movement_system(mut bird_query: Query<(&mut BirdVel, &mut BirdAcc, &mut Transform)>) {
+fn bird_movement_system(
+    mut bird_query: Query<(&mut BirdVel, &mut BirdAcc, &mut Transform)>
+) {
     for (mut b_vel, mut b_acc, mut transform) in bird_query.iter_mut() {
         b_vel.velocity += b_acc.acceleration;
         b_vel.velocity = vec_clip(b_vel.velocity, -MAX_SPEED, MAX_SPEED);
 
+        let new_rad = b_vel.velocity.y.atan2(b_vel.velocity.x);
+        if (new_rad - b_vel.radians).abs() >= 0.5 {
+            b_vel.radians = new_rad;
+        }
+
+        // update position and rotation
         transform.translation += b_vel.velocity * TIME_STEP;
+        transform.rotation = Quat::from_rotation_z(b_vel.radians);
 
         b_acc.acceleration = Vec3::new(0.0, 0.0, 0.0);
     }
